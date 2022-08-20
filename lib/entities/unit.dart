@@ -11,11 +11,11 @@ class Unit extends PositionComponent with CollisionCallbacks {
 
   late final Paint _stroke = Paint()
     ..style = PaintingStyle.stroke
-    ..strokeWidth = 2.0
-    ..color = Colours.fromType(player);
+    ..strokeWidth = 1.0
+    ..color = Colors.white;
   late final Paint _fill = Paint()
     ..style = PaintingStyle.fill
-    ..color = Colours.fromType(Player.opponent(player));
+    ..color = Colours.fromType(player);
 
   Unit({
     required this.radius,

@@ -6,6 +6,7 @@ import 'package:flame/input.dart';
 import 'package:flamejam/background.dart';
 import 'package:flamejam/entities/unit.dart';
 import 'package:flamejam/model.dart';
+import 'package:flamejam/unit_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -15,7 +16,8 @@ class MyGame extends FlameGame
   Location lastClick = const Location(10, 10);
   final double tileSize = 16.0;
   Vector2 cameraVector = Vector2(600, 600);
-  int cameraMoveValue = 15;
+  int cameraMoveValue = 32;
+  UnitManager um = UnitManager();
 
   @override
   Future<void> onLoad() async {
@@ -26,6 +28,7 @@ class MyGame extends FlameGame
       tileSize: tileSize,
       data: mapData,
       onTap: _backgroundTap,
+      onLongTap: _backgroundLongTap,
     ));
     camera.followVector2(cameraVector);
     camera.worldBounds = Rect.fromLTWH(
@@ -45,19 +48,29 @@ class MyGame extends FlameGame
     super.update(dt);
   }
 
-  void _backgroundTap(Location loc) {
-    mapData.setTerritory(loc, 1);
+  void _backgroundTap(Vector2 pos) {
+    final p = camera.screenToWorld(pos);
+    final loc = Location(p.x ~/ tileSize, p.y ~/ tileSize);
     final path = mapData.orthogonalPath(lastClick, loc);
     lastClick = loc;
     for (Location l in path) {
-      mapData.setTerritory(l, 1);
-      add(
-        Unit(
-          radius: tileSize / 3,
-          position: l.toPosition(tileSize),
-          player: Player.blue,
-        ),
+      mapData.setTerritory(l, 2);
+      Unit u = Unit(
+        radius: tileSize / 3,
+        position: l.toPosition(tileSize),
+        player: Random().nextBool() ? Player.blue : Player.red,
       );
+      um.units.add(u);
+      add(u);
+    }
+  }
+
+  void _backgroundLongTap(Vector2 pos) {
+    final p = camera.screenToWorld(pos);
+    final loc = Location(p.x ~/ tileSize, p.y ~/ tileSize);
+    for (Unit u in um.units) {
+      u.position +=
+          Vector2((p.x - u.position.x) * 0.1, (p.y - u.position.y) * 0.1);
     }
   }
 
@@ -66,13 +79,14 @@ class MyGame extends FlameGame
     RawKeyEvent event,
     Set<LogicalKeyboardKey> keysPressed,
   ) {
+    bool handled = false;
     if (keysPressed.contains(LogicalKeyboardKey.arrowDown)) {
       cameraVector.setValues(
         cameraVector.x,
         min(cameraVector.y + cameraMoveValue,
             camera.worldBounds!.bottom - camera.viewport.canvasSize!.y / 2),
       );
-      return KeyEventResult.handled;
+      handled = true;
     }
 
     if (keysPressed.contains(LogicalKeyboardKey.arrowUp)) {
@@ -81,7 +95,7 @@ class MyGame extends FlameGame
         max(cameraVector.y - cameraMoveValue,
             camera.worldBounds!.top + camera.viewport.canvasSize!.y / 2),
       );
-      return KeyEventResult.handled;
+      handled = true;
     }
 
     if (keysPressed.contains(LogicalKeyboardKey.arrowLeft)) {
@@ -89,7 +103,7 @@ class MyGame extends FlameGame
           max(cameraVector.x - cameraMoveValue,
               camera.worldBounds!.left + camera.viewport.canvasSize!.x / 2),
           cameraVector.y);
-      return KeyEventResult.handled;
+      handled = true;
     }
 
     if (keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
@@ -97,9 +111,9 @@ class MyGame extends FlameGame
           min(cameraVector.x + cameraMoveValue,
               camera.worldBounds!.right - camera.viewport.canvasSize!.x / 2),
           cameraVector.y);
-      return KeyEventResult.handled;
+      handled = true;
     }
 
-    return KeyEventResult.ignored;
+    return handled ? KeyEventResult.handled : KeyEventResult.ignored;
   }
 }

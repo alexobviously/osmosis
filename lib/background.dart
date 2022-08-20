@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 class Background extends PositionComponent with TapCallbacks {
   final double tileSize;
   final MapData data;
-  final void Function(Location) onTap;
+  final void Function(Vector2) onTap;
+  final void Function(Vector2) onLongTap;
 
   Background({
     super.size,
@@ -14,6 +15,7 @@ class Background extends PositionComponent with TapCallbacks {
     this.tileSize = 8.0,
     required this.data,
     required this.onTap,
+    required this.onLongTap,
   });
 
   final Paint _paintRed = Paint()..color = Colours.red;
@@ -44,11 +46,19 @@ class Background extends PositionComponent with TapCallbacks {
 
   @override
   void onTapDown(TapDownEvent event) {
-    final loc = Location(
-      event.localPosition.x ~/ tileSize,
-      event.localPosition.y ~/ tileSize,
-    );
-    onTap(loc);
+    // print('${event.localPosition} - ${position}');
+    // final loc = Location(
+    //   event.localPosition.x ~/ tileSize,
+    //   event.localPosition.y ~/ tileSize,
+    // );
+    print(event.deviceKind);
+    onTap(event.localPosition);
     super.onTapDown(event);
+  }
+
+  @override
+  void onLongTapDown(TapDownEvent event) {
+    onLongTap(event.localPosition);
+    super.onLongTapDown(event);
   }
 }
