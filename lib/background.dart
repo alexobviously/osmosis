@@ -10,7 +10,7 @@ class Background extends PositionComponent {
   Background({
     super.size,
     super.position,
-    this.tileSize = 32.0,
+    this.tileSize = 8.0,
     required this.data,
   });
 

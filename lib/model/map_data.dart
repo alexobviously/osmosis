@@ -7,7 +7,7 @@ class MapData {
 
   late final List<List<int>> _territory = List.generate(
     width,
-    (i) => List.generate(height, (i) => Random().nextInt(3)),
+    (i) => List.generate(height, (i) => 0),
   );
   List<List<int>> get territory => _territory;
 
