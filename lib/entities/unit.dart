@@ -40,4 +40,17 @@ class Unit extends PositionComponent with CollisionCallbacks {
   void update(double dt) {
     position += Vector2.random() * (Random().nextDouble() - 0.5);
   }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+    if (other is ScreenHitbox) {
+      //
+    } else if (other is Unit) {
+      position += Vector2(
+        (position.x - other.position.x) * 0.1,
+        (position.y - other.position.y) * 0.1,
+      );
+    }
+    super.onCollision(intersectionPoints, other);
+  }
 }

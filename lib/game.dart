@@ -34,10 +34,10 @@ class MyGame extends FlameGame
     final path = mapData.orthogonalPath(lastClick, loc);
     lastClick = loc;
     for (Location l in path) {
-      mapData.setTerritory(l, 2);
+      mapData.setTerritory(l, 1);
       add(
         Unit(
-          radius: tileSize / 2,
+          radius: tileSize / 3,
           position: l.toPosition(tileSize),
           player: Player.blue,
         ),
