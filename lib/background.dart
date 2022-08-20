@@ -1,17 +1,19 @@
 import 'package:flame/components.dart';
-import 'package:flamejam/model/constants.dart';
-import 'package:flamejam/model/map_data.dart';
+import 'package:flame/experimental.dart';
+import 'package:flamejam/model.dart';
 import 'package:flutter/material.dart';
 
-class Background extends PositionComponent {
+class Background extends PositionComponent with TapCallbacks {
   final double tileSize;
   final MapData data;
+  final void Function(Location) onTap;
 
   Background({
     super.size,
     super.position,
     this.tileSize = 8.0,
     required this.data,
+    required this.onTap,
   });
 
   final Paint _paintRed = Paint()..color = Colours.red;
@@ -38,6 +40,15 @@ class Background extends PositionComponent {
         );
       }
     }
-    // canvas.drawRect(size.toRect(), Paint()..color = Colours.red);
+  }
+
+  @override
+  void onTapDown(TapDownEvent event) {
+    final loc = Location(
+      event.localPosition.x ~/ tileSize,
+      event.localPosition.y ~/ tileSize,
+    );
+    onTap(loc);
+    super.onTapDown(event);
   }
 }
