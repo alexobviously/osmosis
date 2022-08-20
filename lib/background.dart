@@ -20,9 +20,9 @@ class Background extends PositionComponent with TapCallbacks {
   final Paint _paintBlue = Paint()..color = Colours.blue;
   final Paint _paintBlack = Paint()..color = Colours.black;
 
-  Paint _paintForType(int type) => type == SquareType.blue
+  Paint _paintForType(int type) => type == Player.blue
       ? _paintBlue
-      : type == SquareType.red
+      : type == Player.red
           ? _paintRed
           : _paintBlack;
 

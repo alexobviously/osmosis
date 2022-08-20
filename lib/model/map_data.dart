@@ -20,7 +20,7 @@ class MapData {
     _territory[loc.x][loc.y] = value;
   }
 
-  List<Location> squarePathBetween(Location start, Location end) {
+  List<Location> orthogonalPath(Location start, Location end) {
     List<Location> path = [start];
     int i = 0;
     while (path.last != end && i++ < 1000) {
