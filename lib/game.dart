@@ -9,13 +9,14 @@ import 'package:flamejam/model.dart';
 import 'package:flamejam/unit_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flame_audio/flame_audio.dart';
 
 class MyGame extends FlameGame
     with HasTappableComponents, HasCollisionDetection, KeyboardEvents {
   MapData mapData = MapData(128, 128);
   Location lastClick = const Location(10, 10);
   final double tileSize = 16.0;
-  Vector2 cameraVector = Vector2(600, 600);
+  Vector2 cameraVector = Vector2(400, 300);
   int cameraMoveValue = 32;
   UnitManager um = UnitManager();
 
@@ -37,6 +38,8 @@ class MyGame extends FlameGame
       mapData.width * tileSize,
       mapData.height * tileSize,
     );
+
+    startBGMusic();
   }
 
   @override
@@ -46,6 +49,11 @@ class MyGame extends FlameGame
     camera.update(dt);
     super.update(dt);
     super.update(dt);
+  }
+
+  void startBGMusic() {
+    FlameAudio.bgm.initialize();
+    FlameAudio.bgm.play('osmosis-theme-music.mp3');
   }
 
   void _backgroundTap(Vector2 pos) {
